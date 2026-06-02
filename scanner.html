@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security Scanner - BISU Portal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #004a99;
+      --primary-dark: #003366;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #f8fafc;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      background: var(--primary-dark);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+    }
+
+    .scanner-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: black;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+    }
+
+    .scanner-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .scan-region {
+      width: 250px;
+      height: 250px;
+      border: 3px solid var(--success);
+      border-radius: 24px;
+      position: relative;
+      box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.6);
+    }
+
+    .scan-region::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--success);
+      box-shadow: 0 0 15px var(--success);
+      animation: scan-line 2s infinite linear;
+    }
+
+    @keyframes scan-line {
+      0% {
+        top: 0;
+      }
+
+      50% {
+        top: 100%;
+      }
+
+      100% {
+        top: 0;
+      }
+    }
+
+    .scan-text {
+      margin-top: 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 12px 24px;
+      border-radius: 30px;
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+    }
+
+    .success-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.9);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .success-card {
+      background: white;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 24px;
+      overflow: hidden;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .success-header {
+      background: var(--success);
+      color: white;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .success-header .icon {
+      font-size: 5rem;
+      margin-bottom: 20px;
+    }
+
+    .success-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+    }
+
+    .success-body {
+      padding: 40px 32px;
+      text-align: center;
+      color: #1e293b;
+    }
+
+    .success-body p {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      color: #64748b;
+    }
+
+    .detail-badge {
+      display: inline-block;
+      background: #f8fafc;
+      padding: 16px 32px;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: 1.5rem;
+      border: 2px solid #e2e8f0;
+      margin-top: 20px;
+      color: #0f172a;
+    }
+
+    .ok-btn {
+      width: 100%;
+      background: #0f172a;
+      color: white;
+      border: none;
+      padding: 20px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 40px;
+      border-radius: 12px;
+      transition: all 0.2s;
+    }
+
+    .ok-btn:hover {
+      background: #1e293b;
+      transform: translateY(-2px);
+    }
+
+    #canvas {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <button class="back-btn" onclick="window.location.href='index.html'">‹</button>
+    <div>
+      <h1 style="font-size: 1.1rem;">Bohol Island State University</h1>
+      <p style="font-size: 0.85rem; opacity: 0.8;">Calape Campus - Security Scanner</p>
+    </div>
+  </header>
+
+  <main class="scanner-container">
+    <video id="video" playsinline></video>
+    <canvas id="canvas"></canvas>
+
+    <div class="scanner-overlay">
+      <div class="scan-region"></div>
+      <div class="scan-text" id="statusText">Ready to Scan</div>
+    </div>
+  </main>
+
+  <div id="successOverlay" class="success-overlay">
+    <div class="success-card">
+      <div class="success-header">
+        <div class="icon">✓</div>
+        <h2>Access Approved</h2>
+      </div>
+      <div class="success-body">
+        <p id="approvedMessage">Verification Successful</p>
+        <div id="approvedDetail" class="detail-badge">SCANNING...</div>
+        <button class="ok-btn" onclick="closeSuccess()">CONFIRM & CONTINUE</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const statusText = document.getElementById('statusText');
+    const successOverlay = document.getElementById('successOverlay');
+    const approvedMessage = document.getElementById('approvedMessage');
+    const approvedDetail = document.getElementById('approvedDetail');
+
+    let stream = null;
+    let isProcessing = false;
+    let lastScanTime = 0;
+
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' }
+        });
+        video.srcObject = stream;
+        video.setAttribute('playsinline', true);
+        video.play();
+        requestAnimationFrame(tick);
+      } catch (err) {
+        statusText.textContent = "Camera Error: " + err.message;
+        statusText.style.color = "var(--danger)";
+      }
+    }
+
+    function tick() {
+      if (video.readyState === video.HAVE_ENOUGH_DATA && !isProcessing) {
+        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: 'attemptBoth',
+        });
+
+        if (code && Date.now() - lastScanTime > 3000) {
+          handleScan(code.data);
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    async function handleScan(qrContent) {
+      isProcessing = true;
+      statusText.textContent = "VERIFYING...";
+
+      let data = parseQr(qrContent);
+      let appBaseUrl = getAppBaseUrl();
+
+      let endpoint = new URL('api/scan_student.php', appBaseUrl);
+      let body = { student_id: data.id };
+
+      if (data.type === 'Faculty') {
+        endpoint = new URL('api/scan_faculty.php', appBaseUrl);
+        body = { faculty_id: data.id };
+      } else if (data.type === 'Vehicle' || data.type === 'vehicle') {
+        endpoint = new URL('api/scan_vehicle.php', appBaseUrl);
+        body = { vehicle_id: data.id || data.plate };
+      }
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          showSuccess(data, result);
+        } else {
+          statusText.textContent = result.message || "INVALID QR";
+          setTimeout(() => {
+            statusText.textContent = "READY TO SCAN";
+            isProcessing = false;
+          }, 2000);
+        }
+      } catch (err) {
+        statusText.textContent = "CONNECTION ERROR";
+        isProcessing = false;
+      }
+    }
+
+    function parseQr(content) {
+      const data = { type: 'Student', id: content };
+      const lines = content.split('\n');
+      lines.forEach(line => {
+        const [key, ...val] = line.split(':');
+        if (val.length) {
+          const k = key.trim().toLowerCase();
+          const v = val.join(':').trim();
+          if (k === 'type') data.type = v;
+          if (k === 'id') data.id = v;
+          if (k === 'plate') data.plate = v;
+          if (k === 'name') data.name = v;
+        }
+      });
+      return data;
+    }
+
+    function showSuccess(data, result) {
+      if (data.type === 'Vehicle' || data.type === 'vehicle') {
+        approvedMessage.textContent = "Vehicle Entry Approved";
+        approvedDetail.textContent = data.plate || data.id;
+      } else {
+        approvedMessage.textContent = "Access Approved";
+        const person = result.student || result.faculty || data;
+        approvedDetail.textContent = person.full_name || data.name || data.id;
+      }
+
+      successOverlay.style.display = 'flex';
+      lastScanTime = Date.now();
+    }
+
+    function closeSuccess() {
+      successOverlay.style.display = 'none';
+      statusText.textContent = "READY TO SCAN";
+      isProcessing = false;
+    }
+
+    function getAppBaseUrl() {
+      const path = window.location.pathname.toLowerCase();
+      return path.includes('/thesis/') ? new URL('/thesis/', window.location.origin).toString() : 'http://localhost/thesis/';
+    }
+
+    startCamera();
+  </script>
+</body>
+
+</html>

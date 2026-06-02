@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vehicle QR - BISU Portal</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --bg: #0f172a;
+      --surface: rgba(255, 255, 255, 0.1);
+      --text: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.6);
+      --accent: #60a5fa;
+      --success: #10b981;
+      --danger: #ef4444;
+      --border: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('assets/campus_gate.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    header {
+      margin-bottom: 40px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .card {
+      padding: 40px;
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h2 {
+      font-family: 'Playfair Display', serif;
+      margin: 0 0 32px 0;
+      font-size: 1.5rem;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: white;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    input[readonly] {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .btn-main {
+      width: 100%;
+      padding: 16px;
+      background: white;
+      color: var(--bg);
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-main:hover {
+      background: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid var(--border);
+      margin-top: 12px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .qr-output {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 350px;
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      border: 2px dashed var(--border);
+    }
+
+    #qrcode img {
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      border: 8px solid white;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .info-box {
+      padding: 16px;
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 4px solid var(--success);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+      color: #d1fae5;
+    }
+
+    .error-box {
+      padding: 16px;
+      background: rgba(239, 68, 68, 0.1);
+      border-left: 4px solid var(--danger);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+      color: #fee2e2;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>🚗 Vehicle QR Portal</h1>
+      <p>Secure Campus Registration & Access Control</p>
+    </header>
+
+    <div class="content">
+      <div class="card">
+        <h2>Vehicle Registry</h2>
+
+        <div class="info-box">
+          💡 Enter the Vehicle ID from the dashboard to retrieve details.
+        </div>
+
+        <div class="form-group">
+          <label for="vehicleId">Vehicle ID *</label>
+          <input type="text" id="vehicleId" placeholder="e.g., V123abc" required>
+        </div>
+
+        <div class="form-group">
+          <label for="vehiclePlate">Plate Number</label>
+          <input type="text" id="vehiclePlate" placeholder="Auto-populated" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="vehicleType">Vehicle Type</label>
+          <input type="text" id="vehicleType" placeholder="Auto-populated" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="studentName">Registered Owner</label>
+          <input type="text" id="studentName" placeholder="Auto-populated" readonly>
+        </div>
+
+        <div id="vehicleMessage" class="hidden error-box"></div>
+
+        <button class="btn-main" onclick="loadVehicleDetails()">Verify Vehicle</button>
+        <button class="btn-main btn-secondary" onclick="generateVehicleQR()">Generate QR Code</button>
+      </div>
+
+      <div class="card">
+        <h2>Live Preview</h2>
+
+        <div class="qr-output" id="qrOutput">
+          <p id="placeholderText" style="color: var(--text-muted); text-align: center; font-style: italic;">
+            Verify vehicle details to enable QR generation
+          </p>
+          <div id="qrcode"></div>
+        </div>
+
+        <div class="button-group" id="buttonGroup" style="display: none;">
+          <button class="btn-main btn-secondary" onclick="downloadVehicleQR()">📥 Save Image</button>
+          <button class="btn-main btn-secondary" onclick="clearVehicleQR()">🗑️ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentQR = null;
+    let vehicleData = null;
+    const appBaseUrl = getAppBaseUrl();
+
+    function getAppBaseUrl() {
+      const path = window.location.pathname.toLowerCase();
+      return path.includes('/thesis/') ? new URL('/thesis/', window.location.origin).toString() : 'http://localhost/thesis/';
+    }
+
+    window.addEventListener('load', function () {
+      const selectedVehicleId = localStorage.getItem('selectedVehicleQrId');
+      if (selectedVehicleId) {
+        document.getElementById('vehicleId').value = selectedVehicleId;
+        localStorage.removeItem('selectedVehicleQrId');
+        setTimeout(() => loadVehicleDetails(), 500);
+      }
+    });
+
+    async function loadVehicleDetails() {
+      const vehicleId = document.getElementById('vehicleId').value.trim();
+      const msgBox = document.getElementById('vehicleMessage');
+
+      if (!vehicleId) {
+        msgBox.textContent = '❌ Please enter a Vehicle ID';
+        msgBox.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const response = await fetch(new URL('api/get-all-vehicles.php', appBaseUrl), { credentials: 'include' });
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          const vehicle = result.data.find(v => v.vehicle_id === vehicleId);
+          if (vehicle) {
+            vehicleData = vehicle;
+            document.getElementById('vehicleType').value = vehicle.vehicle_type;
+            document.getElementById('vehiclePlate').value = vehicle.plate_number;
+            document.getElementById('studentName').value = vehicle.full_name || 'N/A';
+            msgBox.classList.add('hidden');
+            return;
+          }
+        }
+        msgBox.textContent = `❌ Vehicle ID "${vehicleId}" not found in registry`;
+        msgBox.classList.remove('hidden');
+      } catch (err) {
+        msgBox.textContent = '❌ Connection error';
+        msgBox.classList.remove('hidden');
+      }
+    }
+
+    async function generateVehicleQR() {
+      if (!vehicleData) {
+        alert('Please verify vehicle details first');
+        return;
+      }
+
+      try {
+        const response = await fetch(new URL('api/generate-qr-token.php', appBaseUrl), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ type: 'vehicle', id: vehicleData.vehicle_id })
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          document.getElementById('qrcode').innerHTML = '';
+          document.getElementById('placeholderText').style.display = 'none';
+          currentQR = new QRCode(document.getElementById('qrcode'), {
+            text: result.token,
+            width: 280,
+            height: 280,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+          });
+          document.getElementById('buttonGroup').style.display = 'grid';
+        }
+      } catch (err) {
+        alert('Error generating QR token');
+      }
+    }
+
+    function downloadVehicleQR() {
+      const img = document.querySelector('#qrcode img');
+      if (img) {
+        const link = document.createElement('a');
+        link.href = img.src;
+        link.download = `vehicle-qr-${vehicleData.vehicle_id}.png`;
+        link.click();
+      }
+    }
+
+    function clearVehicleQR() {
+      location.reload();
+    }
+  </script>
+</body>
+
+</html>

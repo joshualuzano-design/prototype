@@ -1,0 +1,27 @@
+<IfModule mod_headers.c>
+    # CORS headers for development
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
+# Rewrite URLs
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Prevent access to sensitive files
+    RewriteRule ^schema\.sql$ - [F]
+    RewriteRule ^setup\.php$ - [F]
+    RewriteRule ^db_config\.php$ - [F]
+    RewriteRule ^middleware\.php$ - [F]
+    
+    # Allow existing files and directories
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+</IfModule>
+
+# Improve performance
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/json application/javascript
+</IfModule>

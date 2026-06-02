@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - BISU Calape Portal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #004a99;
+      --primary-dark: #003366;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #3b82f6;
+      --input-bg: rgba(238, 244, 255, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/campus_gate.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      padding: 50px 40px;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .logo-container {
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .logo-container img {
+      width: 85%;
+      height: 85%;
+      object-fit: contain;
+    }
+
+    .header-text {
+      margin-bottom: 40px;
+    }
+
+    .header-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: #ffffff;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-text p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .message {
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      display: none;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .message.success {
+      background: rgba(220, 252, 231, 0.9);
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .message.error {
+      background: rgba(254, 226, 226, 0.9);
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.2s;
+      color: white;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: white;
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 16px;
+      background: white;
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.3s;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      background: #f8fafc;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .mode-toggle {
+      margin-top: 28px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .mode-toggle a {
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      margin-left: 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <div style="position: absolute; top: 20px; left: 20px;">
+      <a href="index.html" style="color: white; text-decoration: none; font-size: 1.5rem;">‹</a>
+    </div>
+    <div class="logo-container">
+      <img src="assets/logo.png" alt="BISU Logo" onerror="this.src='https://via.placeholder.com/150?text=BISU'">
+    </div>
+
+    <div class="header-text">
+      <h1>BISU-Calape Campus</h1>
+      <p>Admin Portal</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="password" name="password" placeholder="••••••••" required />
+          <span class="password-toggle" id="togglePassword">👁️</span>
+        </div>
+      </div>
+
+      <div class="form-group hidden" id="confirmPasswordGroup">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" />
+      </div>
+
+      <button type="submit" class="login-btn" id="loginBtn">
+        Login to Portal
+      </button>
+    </form>
+
+    <div class="mode-toggle">
+      <span id="toggleText">Don't have an account?</span>
+      <a href="#" id="toggleModeBtn">Sign Up</a>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const messageDiv = document.getElementById('message');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+    const toggleModeBtn = document.getElementById('toggleModeBtn');
+    const toggleText = document.getElementById('toggleText');
+    const togglePassword = document.getElementById('togglePassword');
+    const appBaseUrl = getAppBaseUrl();
+
+    let mode = 'login';
+
+    // Password visibility toggle
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePassword.textContent = type === 'password' ? '👁️' : '🔒';
+    });
+
+    toggleModeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      mode = mode === 'login' ? 'signup' : 'login';
+      updateUI();
+    });
+
+    function updateUI() {
+      messageDiv.style.display = 'none';
+      messageDiv.textContent = '';
+      confirmPasswordGroup.classList.toggle('hidden', mode === 'login');
+      confirmPasswordInput.required = mode === 'signup';
+      loginBtn.textContent = mode === 'login' ? 'Login to Portal' : 'Create Account';
+      toggleText.textContent = mode === 'login' ? "Don't have an account?" : "Already have an account?";
+      toggleModeBtn.textContent = mode === 'login' ? "Sign Up" : "Login";
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (mode === 'signup' && password !== confirmPassword) {
+        showMessage('Passwords do not match', 'error');
+        return;
+      }
+
+      loginBtn.disabled = true;
+      const originalContent = loginBtn.innerHTML;
+      loginBtn.innerHTML = 'Processing...';
+
+      try {
+        const endpoint = mode === 'login'
+          ? new URL('api/login.php', appBaseUrl).toString()
+          : new URL('api/register.php', appBaseUrl).toString();
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            username,
+            password,
+            confirm_password: mode === 'signup' ? confirmPassword : null
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showMessage(mode === 'login' ? 'Login successful!' : 'Account created!', 'success');
+          setTimeout(() => window.location.href = 'admin-dashboard.html', 1000);
+        } else {
+          showMessage(data.message || 'Invalid username or password.', 'error');
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = originalContent;
+        }
+      } catch (error) {
+        showMessage('Connection error: ' + error.message, 'error');
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = originalContent;
+      }
+    });
+
+    function showMessage(msg, type) {
+      messageDiv.textContent = msg;
+      messageDiv.style.display = 'block';
+      messageDiv.className = 'message ' + type;
+    }
+
+    function getAppBaseUrl() {
+      const isLocalPhpPath = window.location.pathname.toLowerCase().includes('/thesis/');
+      return isLocalPhpPath ? new URL('/thesis/', window.location.origin).toString() : 'http://localhost/thesis/';
+    }
+  </script>
+</body>
+
+</html>

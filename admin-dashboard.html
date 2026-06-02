@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BISU - Security Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e293b;
+            --primary-dark: #0f172a;
+            --accent: #3b82f6;
+            --surface: #ffffff;
+            --background: #f1f5f9;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('assets/campus_gate.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: var(--primary);
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+        }
+
+        .brand img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            background: white;
+            padding: 2px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brand h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .main-content {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .welcome-header h2 {
+            font-size: 2.2rem;
+            color: white;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .view-title {
+            text-align: center;
+            flex: 1;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .menu-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 40px 32px;
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: white;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .menu-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .icon-box {
+            font-size: 3rem;
+            margin-bottom: 24px;
+            color: var(--accent);
+            filter: drop-shadow(0 4px 10px rgba(59, 130, 246, 0.3));
+            display: inline-block;
+        }
+
+        .management-view {
+            display: none;
+        }
+
+        .view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 16px;
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .btn-edit {
+            color: #2563eb;
+        }
+
+        .btn-archive {
+            color: #d97706;
+        }
+
+        .btn-qr {
+            color: #4f46e5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 32px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .modal-header button {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            padding: 4px;
+        }
+
+        .modal-header button:hover {
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .modal-footer {
+            margin-top: 32px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        #adminName {
+            text-transform: capitalize;
+            font-weight: 600;
+        }
+
+        .welcome-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .view-title h2 {
+            color: white;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .view-title p {
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1px;
+        }
+
+        .table-section-header {
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        /* Stats Cards Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 24px;
+            border-radius: 16px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: var(--accent);
+        }
+
+        .stat-info h4 {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .stat-info .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* Toast Styles */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: white;
+            color: var(--text);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 6px solid var(--accent);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+
+        /* Search Container */
+        .search-container {
+            position: relative;
+            margin-bottom: 16px;
+            max-width: 400px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Custom Confirm Modal */
+        .confirm-modal-content {
+            text-align: center;
+        }
+
+        .confirm-icon {
+            font-size: 4rem;
+            color: #f59e0b;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="brand" onclick="showView('home')">
+            <img src="assets/logo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/50'">
+            <h1>Bohol Island State University - Calape Campus</h1>
+        </div>
+        <div class="user-menu">
+            <span id="adminName">Admin</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    <main class="main-content">
+        <div id="homeView" class="home-view">
+            <div class="welcome-header">
+                <h2>Welcome Back!</h2>
+                <p>What would you like to manage today?</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                    <div class="stat-info">
+                        <h4>Total Students</h4>
+                        <div class="stat-value" id="stat-students">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="stat-info">
+                        <h4>Faculty & Staff</h4>
+                        <div class="stat-value" id="stat-faculty">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4>Active Violations</h4>
+                        <div class="stat-value" id="stat-violations">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color:var(--success)"><i class="fa-solid fa-door-open"></i></div>
+                    <div class="stat-info">
+                        <h4>Visitor Logs</h4>
+                        <div class="stat-value" id="stat-visitors">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-container">
+                <div class="menu-card" onclick="showView('students')">
+                    <div class="icon-box"><i class="fa-solid fa-users-viewfinder"></i></div>
+                    <h3>Students</h3>
+                    <p>Manage records</p>
+                </div>
+                <div class="menu-card" onclick="showView('faculty')">
+                    <div class="icon-box"><i class="fa-solid fa-chalkboard-user"></i></div>
+                    <h3>Faculty</h3>
+                    <p>Manage personnel</p>
+                </div>
+                <div class="menu-card" onclick="showView('vehicles')">
+                    <div class="icon-box"><i class="fa-solid fa-car-rear"></i></div>
+                    <h3>Vehicles</h3>
+                    <p>Track registration</p>
+                </div>
+                <div class="menu-card" onclick="showView('visitors')">
+                    <div class="icon-box"><i class="fa-solid fa-id-card-clip"></i></div>
+                    <h3>Visitors</h3>
+                    <p>Entry logs</p>
+                </div>
+                <div class="menu-card" onclick="showView('violations')">
+                    <div class="icon-box" style="color:var(--danger);"><i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3>Violations</h3>
+                    <p>Track incidents</p>
+                </div>
+                <div class="menu-card" onclick="showView('archive')">
+                    <div class="icon-box"><i class="fa-solid fa-box-archive"></i></div>
+                    <h3>Archive</h3>
+                    <p>Restore data</p>
+                </div>
+            </div>
+        </div>
+        <div id="view-students" class="management-view">
+            <div class="view-header"><button class="back-btn" onclick="showView('home')">← Back</button>
+                <div class="view-title">
+                    <h2>Campus Student Records</h2>
+                    <p>Student Database</p>
+                </div><button class="btn-add" onclick="openAddModal('students')">+ Add Student</button>
+            </div>
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" placeholder="Search students by name or ID..."
+                    onkeyup="filterTable('students', this.value)">
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Year</th>
+                            <th>Parent/Guardian</th>
+                            <th>Date & Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentList"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="view-violations" class="management-view">
+            <div class="view-header"><button class="back-btn" onclick="showView('home')">← Back</button>
+                <div class="view-title">
+                    <h2>Student Violations</h2>
+                    <p>Incident Tracking & Records</p>
+                </div><button class="btn-add" onclick="openAddModal('violations')"
+                    style="background:var(--danger); color:white;">+ Report Violation</button>
+            </div>
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" placeholder="Search violations by student name or case..."
+                    onkeyup="filterTable('violations', this.value)">
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Violation</th>
+                            <th>Penalty & Status</th>
+                            <th>Date & Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="violationList"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="view-faculty" class="management-view">
+            <div class="view-header"><button class="back-btn" onclick="showView('home')">← Back</button>
+                <div class="view-title">
+                    <h2>University Personnel Records</h2>
+                    <p>Faculty & Staff Database</p>
+                </div><button class="btn-add" onclick="openAddModal('faculty')">+ Add Faculty</button>
+            </div>
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" placeholder="Search faculty by name or department..."
+                    onkeyup="filterTable('faculty', this.value)">
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Dept</th>
+                            <th>Role</th>
+                            <th>Date & Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facultyList"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="view-vehicles" class="management-view">
+            <div class="view-header"><button class="back-btn" onclick="showView('home')">← Back</button>
+                <div class="view-title">
+                    <h2>Registered Campus Vehicles</h2>
+                    <p>Vehicle Masterlist</p>
+                </div><button class="btn-add" onclick="openAddModal('vehicles')">+ Add Vehicle</button>
+            </div>
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" placeholder="Search vehicles by plate or owner..."
+                    onkeyup="filterTable('vehicles', this.value)">
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Plate</th>
+                            <th>Owner</th>
+                            <th>Type</th>
+                            <th>ID</th>
+                            <th>Date & Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vehicleList"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="view-visitors" class="management-view">
+            <div class="view-header"><button class="back-btn" onclick="showView('home')">← Back</button>
+                <div class="view-title">
+                    <h2>Campus Entry Logs</h2>
+                    <p>Visitor Tracking</p>
+                </div><button class="btn-add" onclick="openAddModal('visitors')">+ Check In</button>
+            </div>
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" placeholder="Search visitor logs..."
+                    onkeyup="filterTable('visitors', this.value)">
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>Visitor Name</th>
+                            <th>Purpose</th>
+                            <th>Date & Time</th>
+                            <th>Visiting</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitorList"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="view-archive" class="management-view">
+            <div class="view-header"><button class="back-btn" onclick="showView('home')">← Back</button>
+                <div class="view-title">
+                    <h2>System Archive</h2>
+                    <p>Restore Hidden Records</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="table-section-header"><strong>📂 Archived Student Records</strong></div>
+                <table id="archiveStudentTable">
+                    <tbody id="archiveStudentList"></tbody>
+                </table>
+                <div class="table-section-header" style="margin-top:20px;border-top:1px solid var(--border);"><strong>📂
+                        Archived Personnel Records</strong></div>
+                <table id="archiveFacultyTable">
+                    <tbody id="archiveFacultyList"></tbody>
+                </table>
+                <div class="table-section-header" style="margin-top:20px;border-top:1px solid var(--border);"><strong>📂
+                        Archived Vehicle Records</strong></div>
+                <table id="archiveVehicleTable">
+                    <tbody id="archiveVehicleList"></tbody>
+                </table>
+                <div class="table-section-header" style="margin-top:20px;border-top:1px solid var(--border);"><strong>📂
+                        Archived Visitor Entry Logs</strong></div>
+                <table id="archiveVisitorTable">
+                    <tbody id="archiveVisitorList"></tbody>
+                </table>
+                <div class="table-section-header" style="margin-top:20px;border-top:1px solid var(--border);"><strong>📂
+                        Archived Violation Records</strong></div>
+                <table id="archiveViolationTable">
+                    <tbody id="archiveViolationList"></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Modals -->
+        <div id="modal-students" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Student Information</h3><button onclick="closeModal('students')">&times;</button>
+                </div>
+                <form onsubmit="handleFormSubmit(event, 'students')">
+                    <input type="hidden" name="is_edit" value="0">
+                    <div class="form-group"><label>Student ID</label><input type="text" name="student_id" required>
+                    </div>
+                    <div class="form-group"><label>Name</label><input type="text" name="full_name" required></div>
+                    <div class="form-group"><label>Course</label><input type="text" name="course" required></div>
+                    <div class="form-group"><label>Year</label><select name="year_level">
+                            <option value="1">1st</option>
+                            <option value="2">2nd</option>
+                            <option value="3">3rd</option>
+                            <option value="4">4th</option>
+                        </select></div>
+                    <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;">
+                        <h4 style="margin-bottom:12px;font-size:0.9rem;color:var(--accent);">Parent / Guardian Details
+                        </h4>
+                        <div class="form-group"><label>Parent Name</label><input type="text" name="parent_name"
+                                placeholder="Full Name"></div>
+                        <div class="form-group"><label>Contact Number (for SMS)</label><input type="text"
+                                name="parent_contact" placeholder="e.g. 09123456789"></div>
+                    </div>
+                    <div class="modal-footer"><button type="button" class="btn-cancel"
+                            onclick="closeModal('students')">Cancel</button><button type="submit"
+                            class="btn-add">Save</button></div>
+                </form>
+            </div>
+        </div>
+        <div id="modal-faculty" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Faculty Info</h3><button onclick="closeModal('faculty')">&times;</button>
+                </div>
+                <form onsubmit="handleFormSubmit(event, 'faculty')">
+                    <input type="hidden" name="is_edit" value="0">
+                    <div class="form-group"><label>ID</label><input type="text" name="faculty_id" required></div>
+                    <div class="form-group"><label>Name</label><input type="text" name="full_name" required></div>
+                    <div class="form-group"><label>Dept</label><input type="text" name="department" required></div>
+                    <div class="form-group"><label>Role</label><input type="text" name="role" required></div>
+                    <div class="modal-footer"><button type="button" class="btn-cancel"
+                            onclick="closeModal('faculty')">Cancel</button><button type="submit"
+                            class="btn-add">Save</button></div>
+                </form>
+            </div>
+        </div>
+        <div id="modal-vehicles" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Vehicle Info</h3><button onclick="closeModal('vehicles')">&times;</button>
+                </div>
+                <form onsubmit="handleFormSubmit(event, 'vehicles')">
+                    <div class="form-group"><label>Plate</label><input type="text" name="plate_number" required></div>
+                    <div class="form-group"><label>Owner ID</label><input type="text" name="owner_id" required></div>
+                    <div class="form-group"><label>Type</label><select name="vehicle_type">
+                            <option value="Motorcycle">Motorcycle</option>
+                            <option value="Car">Car</option>
+                        </select></div>
+                    <div class="modal-footer"><button type="button" class="btn-cancel"
+                            onclick="closeModal('vehicles')">Cancel</button><button type="submit"
+                            class="btn-add">Save</button></div>
+                </form>
+            </div>
+        </div>
+        <div id="modal-visitors" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Visitor Check-In</h3><button onclick="closeModal('visitors')">&times;</button>
+                </div>
+                <form onsubmit="handleFormSubmit(event, 'visitors')">
+                    <input type="hidden" name="visitor_id">
+                    <div class="form-group"><label>Visitor Name</label><input type="text" name="name" required
+                            placeholder="Full Name"></div>
+                    <div class="form-group"><label>Contact Number</label><input type="text" name="contact_number"
+                            placeholder="Phone or Valid ID Number"></div>
+                    <div class="form-group"><label>Purpose of Visit</label><input type="text" name="purpose" required
+                            placeholder="e.g. Enrollment, Meeting"></div>
+                    <div class="form-group"><label>Person / Office to Visit</label><input type="text" name="visiting"
+                            placeholder="Who are they visiting?"></div>
+                    <div class="modal-footer"><button type="button" class="btn-cancel"
+                            onclick="closeModal('visitors')">Cancel</button><button type="submit"
+                            class="btn-add">Save</button></div>
+                </form>
+            </div>
+        </div>
+        <div id="modal-violations" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Violation Report</h3><button onclick="closeModal('violations')">&times;</button>
+                </div>
+                <form onsubmit="handleFormSubmit(event, 'violations')">
+                    <input type="hidden" name="violation_id">
+                    <div class="form-group"><label>Student ID</label><input type="text" name="student_id" required
+                            placeholder="e.g. 2024001"></div>
+                    <div class="form-group"><label>Violation Type</label>
+                        <select name="violation_type">
+                            <option value="ID Violation">ID Violation</option>
+                            <option value="Uniform Violation">Uniform Violation</option>
+                            <option value="Flag Raising Violation">Flag Raising Violation (Monday)</option>
+                            <option value="Illegal Parking">Illegal Parking</option>
+                            <option value="Reckless Driving">Reckless Driving</option>
+                            <option value="Unauthorized Entry">Unauthorized Entry</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Penalty / Action Taken</label>
+                        <select name="penalty">
+                            <option value="Warning">Verbal Warning</option>
+                            <option value="Written Warning">Written Warning</option>
+                            <option value="Suspension">Suspension</option>
+                            <option value="Community Service">Community Service</option>
+                            <option value="Expulsion">Expulsion</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Case Status</label>
+                        <select name="status">
+                            <option value="Active">Active / Pending</option>
+                            <option value="Resolved">Resolved / Closed</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Description / Details</label><textarea name="description"
+                            placeholder="Provide more context..."
+                            style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); min-height:80px;"></textarea>
+                    </div>
+                    <div class="form-group"><label>Date & Time of Incident</label><input type="datetime-local"
+                            name="date_violation" required></div>
+                    <div class="modal-footer"><button type="button" class="btn-cancel"
+                            onclick="closeModal('violations')">Cancel</button><button type="submit" class="btn-add"
+                            style="background:var(--danger); color:white;">Save Record</button></div>
+                </form>
+            </div>
+        </div>
+        <div id="modal-confirm" class="modal">
+            <div class="modal-content confirm-modal-content">
+                <div class="confirm-icon"><i class="fa-solid fa-circle-question"></i></div>
+                <h3 id="confirm-title" style="margin-bottom:12px;">Confirm Action</h3>
+                <p id="confirm-message" style="color:var(--text-muted); margin-bottom:24px;">Are you sure you want to
+                    proceed?</p>
+                <div style="display:flex; justify-content:center; gap:12px;">
+                    <button class="btn-cancel" onclick="closeConfirm(false)">Cancel</button>
+                    <button class="btn-add" id="confirm-yes-btn">Yes, Proceed</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast-container"></div>
+    </main>
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-exclamation');
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        let confirmCallback = null;
+        function customConfirm(title, message, callback) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-message').textContent = message;
+            confirmCallback = callback;
+            document.getElementById('modal-confirm').style.display = 'flex';
+            document.getElementById('confirm-yes-btn').onclick = () => {
+                closeConfirm(true);
+                if (confirmCallback) confirmCallback();
+            };
+        }
+        function closeConfirm(v) { document.getElementById('modal-confirm').style.display = 'none'; }
+
+        function filterTable(t, q) {
+            const idMap = { 'students': 'studentList', 'faculty': 'facultyList', 'vehicles': 'vehicleList', 'visitors': 'visitorList', 'violations': 'violationList' };
+            const b = document.getElementById(idMap[t]);
+            const rows = b.getElementsByTagName('tr');
+            const query = q.toLowerCase();
+            for (let i = 0; i < rows.length; i++) {
+                const text = rows[i].textContent.toLowerCase();
+                rows[i].style.display = text.includes(query) ? '' : 'none';
+            }
+        }
+
+        async function updateDashboardStats() {
+            const types = ['students', 'faculty', 'vehicles', 'visitors', 'violations'];
+            for (const t of types) {
+                const map = { 'students': 'api/get-all-students.php', 'faculty': 'api/get-all-faculty.php', 'vehicles': 'api/get-all-vehicles.php', 'visitors': 'api/get-all-visitors.php', 'violations': 'api/get-all-violations.php' };
+                try {
+                    const r = await fetch(new URL(map[t], appBaseUrl), { credentials: 'include' });
+                    const res = await r.json();
+                    const count = res.data ? res.data.length : 0;
+                    const el = document.getElementById('stat-' + t);
+                    if (el) el.textContent = count;
+                } catch (e) { }
+            }
+        }
+
+        const appBaseUrl = getAppBaseUrl();
+        async function checkAuth() { try { const r = await fetch(new URL('api/check-auth.php', appBaseUrl), { credentials: 'include' }); const d = await r.json(); document.getElementById('adminName').textContent = d.username; updateDashboardStats(); } catch (e) { window.location.href = 'admin-login.html'; } }
+        function showView(v) { document.querySelectorAll('.management-view, .home-view').forEach(e => e.style.display = 'none'); if (v === 'home') { document.getElementById('homeView').style.display = 'block'; updateDashboardStats(); } else { const view = document.getElementById('view-' + v); if (view) { view.style.display = 'block'; if (v === 'archive') loadArchiveData(); else loadData(v); } } }
+        function openAddModal(t) {
+            const m = document.getElementById('modal-' + t);
+            const f = m.querySelector('form');
+            f.reset();
+            const editFlag = f.querySelector('[name="is_edit"]');
+            if (editFlag) editFlag.value = "0";
+
+            // Auto-fill datetime-local for violations
+            if (t === 'violations') {
+                const now = new Date();
+                const offset = now.getTimezoneOffset() * 60000;
+                const localISOTime = (new Date(now - offset)).toISOString().slice(0, 16);
+                const dateInput = f.querySelector('[name="date_violation"]');
+                if (dateInput) dateInput.value = localISOTime;
+            }
+
+            m.style.display = 'flex';
+        }
+        function openEditModal(t, d) { const data = JSON.parse(decodeURIComponent(d)); const m = document.getElementById('modal-' + t); const f = m.querySelector('form'); f.reset(); const editFlag = f.querySelector('[name="is_edit"]'); if (editFlag) editFlag.value = "1"; for (const k in data) { const i = f.querySelector(`[name="${k}"]`); if (i) i.value = data[k]; } m.style.display = 'flex'; }
+        function closeModal(t) { document.getElementById('modal-' + t).style.display = 'none'; }
+        async function handleFormSubmit(e, t) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target)); const map = { 'students': 'api/add-student.php', 'faculty': 'api/add-faculty.php', 'vehicles': 'api/add-vehicle.php', 'visitors': 'api/add-visitor.php', 'violations': 'api/add-violation.php' }; try { const r = await fetch(new URL(map[t], appBaseUrl), { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }); const res = await r.json(); if (res.success) { showToast(t.charAt(0).toUpperCase() + t.slice(1) + ' saved successfully!'); closeModal(t); loadData(t); updateDashboardStats(); } else showToast(res.message, 'error'); } catch (err) { showToast('Network Error: Could not connect to API.', 'error'); } }
+        async function loadData(t) { const map = { 'students': 'api/get-all-students.php', 'faculty': 'api/get-all-faculty.php', 'vehicles': 'api/get-all-vehicles.php', 'visitors': 'api/get-all-visitors.php', 'violations': 'api/get-all-violations.php' }; try { const r = await fetch(new URL(map[t], appBaseUrl) + '?t=' + Date.now(), { credentials: 'include' }); const res = await r.json(); renderTable(t, res.data || []); } catch (e) { } }
+
+        function renderTable(t, data) {
+            const idMap = {
+                'students': 'studentList',
+                'faculty': 'facultyList',
+                'vehicles': 'vehicleList',
+                'visitors': 'visitorList',
+                'violations': 'violationList'
+            };
+            const id = idMap[t] || 'studentList';
+            const b = document.getElementById(id);
+            b.innerHTML = data.length ? '' : '<tr><td colspan="6">No records</td></tr>';
+            data.forEach(i => {
+                let r = '';
+                if (t === 'students') {
+                    r = `<td>${i.student_id}</td><td>${i.full_name}</td><td>${i.course}</td><td>${i.year_level}</td><td style="font-size:0.85rem;color:var(--text-muted)"><strong>${i.parent_name || 'N/A'}</strong><br>${i.parent_contact || ''}</td><td><small>${i.updated_at ? new Date(i.updated_at).toLocaleString() : 'N/A'}</small></td>`;
+                } else if (t === 'faculty') {
+                    r = `<td>${i.faculty_id}</td><td>${i.full_name}</td><td>${i.department}</td><td>${i.role}</td><td><small>${i.updated_at ? new Date(i.updated_at).toLocaleString() : 'N/A'}</small></td>`;
+                } else if (t === 'vehicles') {
+                    r = `<td>${i.plate_number}</td><td>${i.owner_name || i.owner_id}</td><td>${i.vehicle_type}</td><td>${i.owner_id}</td><td><small>${i.updated_at ? new Date(i.updated_at).toLocaleString() : 'N/A'}</small></td>`;
+                } else if (t === 'visitors') {
+                    r = `<td><small>${i.visitor_id}</small></td><td>${i.name}</td><td>${i.purpose}</td><td>${new Date(i.date_visit || i.updated_at).toLocaleString()}</td><td>${i.visiting || '-'}</td>`;
+                } else if (t === 'violations') {
+                    const isResolved = i.status === 'Resolved';
+                    const badgeBg = isResolved ? 'var(--success)' : (i.penalty === 'Suspension' ? 'var(--danger)' : 'var(--accent)');
+                    r = `<td>${i.student_id}</td><td>${i.student_name || 'Unknown'}</td><td><strong>${i.violation_type}</strong><br><small>${i.description || ''}</small></td><td><span class="badge" style="background:${badgeBg}; color:white; padding:2px 8px; border-radius:4px; font-size:0.75rem;">${i.penalty}</span><br><small style="color:${isResolved ? 'var(--success)' : 'inherit'}; font-weight:${isResolved ? '600' : 'normal'}">${i.status}</small></td><td>${new Date(i.date_violation || i.updated_at).toLocaleString()}</td>`;
+                }
+                const recordId = t === 'students' ? i.student_id : (t === 'faculty' ? i.faculty_id : (t === 'vehicles' ? i.plate_number : (t === 'violations' ? i.violation_id : i.visitor_id)));
+                b.innerHTML += `<tr>${r}<td><div class="action-btns"><button class="btn-action btn-edit" onclick="openEditModal('${t}', '${encodeURIComponent(JSON.stringify(i))}')">Edit</button><button class="btn-action btn-archive" onclick="archiveRecord('${t}', '${recordId}')">Archive</button>${t !== 'visitors' ? `<button class="btn-action btn-qr" onclick="useForQR('${t}', '${encodeURIComponent(JSON.stringify(i))}')">QR</button>` : ''}</div></td></tr>`;
+            });
+        }
+
+        async function loadArchiveData() { try { const r = await fetch(new URL('api/get-archives.php', appBaseUrl) + '?t=' + Date.now(), { credentials: 'include' }); const d = await r.json(); renderArchiveTable('archiveStudentList', d.students, 'students', 'student_id'); renderArchiveTable('archiveFacultyList', d.faculty, 'faculty', 'faculty_id'); renderArchiveTable('archiveVehicleList', d.vehicles, 'vehicles', 'plate_number'); renderArchiveTable('archiveVisitorList', d.visitors, 'visitors', 'visitor_id'); renderArchiveTable('archiveViolationList', d.violations, 'violations', 'violation_id'); } catch (e) { } }
+        function renderArchiveTable(l, items, t, k) {
+            const b = document.getElementById(l);
+            b.innerHTML = items.length ? '' : '<tr><td colspan="4">Empty</td></tr>';
+            items.forEach(i => {
+                let content = '';
+                if (t === 'violations') {
+                    content = `<td><small>${i.student_id}</small></td><td><strong>${i.student_name || 'Unknown Student'}</strong></td><td>${i.violation_type}</td>`;
+                } else if (t === 'vehicles') {
+                    content = `<td><strong>${i.plate_number}</strong></td><td>${i.owner_name || 'Unknown Owner'}</td><td><small>${i.owner_id}</small></td>`;
+                } else {
+                    content = `<td>${i[k]}</td><td colspan="2">${i.full_name || i.name || i.plate_number || i.violation_type}</td>`;
+                }
+                b.innerHTML += `<tr>${content}<td><button class="btn-action" style="color:var(--success)" onclick="restoreRecord('${t}', '${i[k]}')">Restore</button></td></tr>`;
+            });
+        }
+        async function restoreRecord(t, id) { customConfirm('Restore Record', `Are you sure you want to restore this ${t.slice(0, -1)}?`, async () => { try { const r = await fetch(new URL('api/restore-record.php', appBaseUrl), { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ type: t, id: id }) }); const res = await r.json(); if (res.success) { showToast('Record restored!'); loadArchiveData(); updateDashboardStats(); } } catch (e) { } }); }
+        async function archiveRecord(t, id) { customConfirm('Archive Record', `Are you sure you want to archive this ${t.slice(0, -1)}?`, async () => { try { const r = await fetch(new URL('api/archive-record.php', appBaseUrl), { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ type: t, id: id }) }); const res = await r.json(); if (res.success) { showToast('Record archived!'); loadData(t); updateDashboardStats(); } } catch (e) { } }); }
+        function useForQR(t, d) { const data = JSON.parse(decodeURIComponent(d)); let text = ''; if (t === 'students') text = `Type: Student\nID: ${data.student_id}\nName: ${data.full_name}`; else if (t === 'faculty') text = `Type: Faculty\nID: ${data.faculty_id}\nName: ${data.full_name}`; else if (t === 'vehicles') text = `Type: Vehicle\nPlate: ${data.plate_number}\nOwner: ${data.owner_name}`; localStorage.setItem('selectedStudentTextData', text); window.location.href = 'qr-code generator.html'; }
+        function logout() { fetch(new URL('api/logout.php', appBaseUrl), { credentials: 'include' }).then(() => window.location.href = 'admin-login.html'); }
+        function getAppBaseUrl() { return window.location.pathname.toLowerCase().includes('/thesis/') ? new URL('/thesis/', window.location.origin).toString() : 'http://localhost/thesis/'; }
+        window.onload = checkAuth;
+    </script>
+</body>
+
+</html>
